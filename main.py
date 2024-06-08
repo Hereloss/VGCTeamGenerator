@@ -9,7 +9,11 @@ listOfPokemonDetails = []
 
 restrictedAdded = False
 
-listOfRestricted = ["Calyrex-Shadow","Calyrex-Ice","Terapagos","Miraidon","Koraidon","Groudon","Zamazenta","Zacian","Lunala","Kyruem-White","Kyruem-Black","Kyogre","Eternatus","Zamazenta-Crowned","Zacian-Crowned","Mewtwo","Dialga","Palkia","Lugia","Ho-Oh","Rayquaza","Giratina","Zekrom","Reshiram","Solgaleo","Necrozma-Dawn-Wings","Necrozma-Dusk-Mane","Necrozma","Calyrex","Dialga-Origin","Palkia-Origin","Giratina-Origin",""]
+listOfRestricted = ["Calyrex-Shadow", "Calyrex-Ice", "Terapagos", "Miraidon", "Koraidon", "Groudon", "Zamazenta",
+                    "Zacian", "Lunala", "Kyruem-White", "Kyruem-Black", "Kyogre", "Eternatus", "Zamazenta-Crowned",
+                    "Zacian-Crowned", "Mewtwo", "Dialga", "Palkia", "Lugia", "Ho-Oh", "Rayquaza", "Giratina", "Zekrom",
+                    "Reshiram", "Solgaleo", "Necrozma-Dawn-Wings", "Necrozma-Dusk-Mane", "Necrozma", "Calyrex",
+                    "Dialga-Origin", "Palkia-Origin", "Giratina-Origin", ""]
 
 usedItems = []
 
@@ -19,7 +23,9 @@ fullyNamedTeam = False
 
 teamNames = []
 
-choiceBannedMoves = ["Protect", "Helping Hand", "Follow Me","Nasty Plot","Trick Room","Tailwind","Decorate","Encore","Wide Guard","Spore","Rage Powder","Calm Mind"]
+choiceBannedMoves = ["Protect", "Helping Hand", "Follow Me", "Nasty Plot", "Trick Room", "Tailwind", "Decorate",
+                     "Encore", "Wide Guard", "Spore", "Rage Powder", "Calm Mind"]
+
 
 def generateTeam(name):
     print("Getting details for your captain")
@@ -49,15 +55,16 @@ def generateTeam(name):
                     print("No restricted pokemon - last one will be forced as one")
                     name = getARestricted()
 
-    print("Complete! Your team is: \n" )
+    print("Complete! Your team is: \n")
     print("\n\n".join(listOfPokemonDetails))
+
 
 def addToPartners(data):
     for (pokemon, percentage) in data[1].items():
         if pokemon in potentialPartners:
-           currentPercentage = potentialPartners[pokemon] * (len(listOfPokemonDetails) - 1)
-           percentageNum = float(percentage)
-           potentialPartners[pokemon] = (percentageNum + currentPercentage) / len(listOfPokemonDetails)
+            currentPercentage = potentialPartners[pokemon] * (len(listOfPokemonDetails) - 1)
+            percentageNum = float(percentage)
+            potentialPartners[pokemon] = (percentageNum + currentPercentage) / len(listOfPokemonDetails)
         else:
             percentageNum = float(percentage)
             potentialPartners[pokemon] = percentageNum / len(listOfPokemonDetails)
@@ -76,6 +83,7 @@ def findNextPokemon():
         complete = allowed
     return newTeammate
 
+
 def getARestricted():
     for (name, value) in potentialPartners.items():
         for (restrictedName) in listOfRestricted:
@@ -84,12 +92,14 @@ def getARestricted():
     print("No potential restricted partners - will default to first in list")
     return restrictedName[0]
 
+
 def getPokemonDetails(name):
     url = baseUrl + name
     r = requests.get(url)
     text = r.text
     formattedData = formatText(name, text)
     return formattedData
+
 
 def createPokemon(name, data):
     moves = generateMovesFromPercentages(data[0])
@@ -104,6 +114,7 @@ def createPokemon(name, data):
     print("Pokemon created!")
     paste = formatPokemon(name, moves, item, ability, stats, tera)
     listOfPokemonDetails.append(paste)
+
 
 def formatPokemon(name, moves, item, ability, stats, tera):
     formatMoves = ""
@@ -127,7 +138,8 @@ def formatPokemon(name, moves, item, ability, stats, tera):
         elif index == 5:
             formatStats += stat + " Spe"
         index += 1
-    return name + " @ " + item + " \n Ability: " + ability + "\n Level: 50 \n Tera Type: " + tera + "\n EVs: "+ formatStats + " \n " + nature + " Nature \n" + formatMoves
+    return name + " @ " + item + " \n Ability: " + ability + "\n Level: 50 \n Tera Type: " + tera + "\n EVs: " + formatStats + " \n " + nature + " Nature \n" + formatMoves
+
 
 def generateMovesFromPercentages(data):
     moves = []
@@ -143,6 +155,8 @@ def generateMovesFromPercentages(data):
                 break
         data.pop(key)
     return moves
+
+
 def getFromPercentage(data):
     total = sumValues(data)
     randomNum = random.random() * total
@@ -153,11 +167,13 @@ def getFromPercentage(data):
         if (randomNum < currentNum):
             return key
 
+
 def sumValues(data):
-    total = 0;
+    total = 0
     for (key, value) in data.items():
         total = total + float(value)
     return total
+
 
 def getItemFromPercentage(data, moves):
     total = sumValues(data)
@@ -175,15 +191,15 @@ def getItemFromPercentage(data, moves):
             currentNum += valueNum
             if (randomNum < currentNum):
                 item = key
-                break;
+                break
         if choiceBanned & has_choice(item):
             if (choiceBannedCount > 20):
                 print("Choice banned - but no other items found within 20 attempts, will leave on choice item")
-                break;
-            print("Choice BANNED!")
+                break
             item = ""
             choiceBannedCount += 1
     return item
+
 
 def has_choice(inputString):
     if re.search('Choice', inputString):
@@ -192,6 +208,7 @@ def has_choice(inputString):
         return True
     else:
         return False
+
 
 def getTeamFromPercentage(data):
     randomNum = random.random() * 600
@@ -225,26 +242,28 @@ def chooseStatDist(data, nature):
         if (randomNum < currentNum):
             return key
 
+
 def formatText(name, text):
     response = html2text.html2text(text)
     if not re.search(name, text):
-        print("Chosen Captain is not usable in the meta - most used pokemon picked instead. Name will be unchanged on paste")
+        print(
+            "Chosen Captain is not usable in the meta - most used pokemon picked instead (or you misspelt its name). Name will be unchanged on paste")
         subCaptain = text.split("Current Pokemon:")[1].split("</span>")[0].split("<span>")[1]
         print("Substitute Captain: " + subCaptain)
     moves = response.split("Moves")[1].split("## Teammates")[0].split("*")
-    moveMap = ConvertToMap(moves," ")
+    moveMap = ConvertToMap(moves, " ")
     teammates = response.split("Teammates")[1].split("## Items")[0].split("*")
-    teammateMap = ConvertToMap(teammates,"\n\n")
+    teammateMap = ConvertToMap(teammates, "\n\n")
     items = response.split("Items")[1].split("## Abilities")[0].split("*")
     itemsMap = ConvertToMap(items, "\n\n")
     abilities = response.split("Abilities")[1].split("## EV Spreads")[0].split("*")
     abilitiesMap = ConvertToMap(abilities, " ")
     evSpreads = response.split("EV Spreads")[1].split("## Natures")[0].split("*")
-    evSpreadsMap = ConvertToMap(evSpreads," ")
+    evSpreadsMap = ConvertToMap(evSpreads, " ")
     natures = response.split("Natures")[1].split("## Top EVs By Category")[0].split("*")
     naturesMap = ConvertToMap(natures, " ")
     teraType = response.split("Tera Type")[1].split("## Export Pokemon")[0].split("*")
-    teraTypeMap = ConvertToMap(teraType," ")
+    teraTypeMap = ConvertToMap(teraType, " ")
     return [moveMap, teammateMap, itemsMap, abilitiesMap, evSpreadsMap, naturesMap, teraTypeMap]
 
 
@@ -262,6 +281,7 @@ def ConvertToMap(list, splitter):
         res_dct[key] = value
     return res_dct
 
+
 def mysplit(s):
     name = ""
     value = ""
@@ -277,8 +297,10 @@ def mysplit(s):
     name = " ".join(filter(None, nameList))
     return name + ";" + value
 
+
 def has_numbers(inputString):
     return any(char.isdigit() for char in inputString)
+
 
 def has_slash(inputString):
     if re.search('/', inputString):
@@ -306,4 +328,3 @@ if __name__ == '__main__':
             teamNames.append(nextName)
         teamNames.append("End")
     generateTeam(name)
-
