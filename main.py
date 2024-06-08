@@ -80,6 +80,9 @@ def findNextPokemon():
             if re.search(newTeammate, pokemon):
                 # print("New teammate: " + newTeammate + " not allowed")
                 allowed = False
+            elif re.search(newTeammate.split("-")[0], pokemon):
+                # print("New teammate: " + newTeammate + " not allowed")
+                allowed = False
         complete = allowed
     return newTeammate
 
@@ -194,11 +197,20 @@ def getItemFromPercentage(data, moves):
                 break
         if choiceBanned & has_choice(item):
             if (choiceBannedCount > 20):
-                print("Choice banned - but no other items found within 20 attempts, will leave on choice item")
+                item = getNonChoiceItem(data)
+                print("Choice banned - but no other items found within 20 attempts, using: " + item)
                 break
             item = ""
             choiceBannedCount += 1
     return item
+
+def getNonChoiceItem(data):
+    for (key, value) in data.items():
+        if not re.search('Choice', key):
+            if not re.search('Assault', key):
+                return key
+    return random.choice(list(data.items()))
+
 
 
 def has_choice(inputString):
