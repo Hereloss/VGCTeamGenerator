@@ -9,7 +9,7 @@ listOfPokemonDetails = []
 
 restrictedAdded = False
 
-listOfRestricted = ["Calyrex-Shadow","Calyrex-Ice","Terapagos","Miraidon","Koraidon","Groudon","Zamazenta","Zacian","Lunala","Kyruem-White","Kyruem-Black","Kyogre","Eternatus","Zamazenta-Crowned","Zacian-Crowned"]
+listOfRestricted = ["Calyrex-Shadow","Calyrex-Ice","Terapagos","Miraidon","Koraidon","Groudon","Zamazenta","Zacian","Lunala","Kyruem-White","Kyruem-Black","Kyogre","Eternatus","Zamazenta-Crowned","Zacian-Crowned","Mewtwo","Dialga","Palkia","Lugia","Ho-Oh","Rayquaza","Giratina","Zekrom","Reshiram","Solgaleo","Necrozma-Dawn-Wings","Necrozma-Dusk-Mane","Necrozma","Calyrex","Dialga-Origin","Palkia-Origin","Giratina-Origin",""]
 
 usedItems = []
 
@@ -35,6 +35,8 @@ def generateTeam(name):
         addToPartners(data)
         if (fullyNamedTeam):
             name = teamNames[currentNumberOnForNamedTeam]
+            if name == "":
+                name = findNextPokemon()
             currentNumberOnForNamedTeam += 1
         else:
             name = findNextPokemon()
@@ -160,6 +162,7 @@ def sumValues(data):
 def getItemFromPercentage(data, moves):
     total = sumValues(data)
     randomNum = random.random() * total
+    choiceBannedCount = 0
     currentNum = 0
     choiceBanned = False
     for (move) in moves:
@@ -174,8 +177,12 @@ def getItemFromPercentage(data, moves):
                 item = key
                 break;
         if choiceBanned & has_choice(item):
+            if (choiceBannedCount > 20):
+                print("Choice banned - but no other items found within 20 attempts, will leave on choice item")
+                break;
             print("Choice BANNED!")
             item = ""
+            choiceBannedCount += 1
     return item
 
 def has_choice(inputString):
