@@ -26,6 +26,10 @@ teamNames = []
 choiceBannedMoves = ["Protect", "Helping Hand", "Follow Me", "Nasty Plot", "Trick Room", "Tailwind", "Decorate",
                      "Encore", "Wide Guard", "Spore", "Rage Powder", "Calm Mind"]
 
+# TURN TO TRUE IF YOU JUST WANT SUGGESTIONS - NO GENERATION
+
+noGeneration = False
+
 
 def generateTeam(name):
     print("Getting details for your captain")
@@ -42,7 +46,10 @@ def generateTeam(name):
         if (fullyNamedTeam):
             name = teamNames[currentNumberOnForNamedTeam]
             if name == "":
-                name = findNextPokemon()
+                if noGeneration:
+                    break
+                else:
+                    name = findNextPokemon()
             currentNumberOnForNamedTeam += 1
         else:
             name = findNextPokemon()
@@ -55,6 +62,9 @@ def generateTeam(name):
                     print("No restricted pokemon - last one will be forced as one")
                     name = getARestricted()
 
+    if (noGeneration):
+        showPotentials()
+        return
     print("Complete! Your team is: \n")
     print("\n\n".join(listOfPokemonDetails))
 
@@ -330,6 +340,12 @@ def has_slash(inputString):
     else:
         return False
 
+def showPotentials():
+    sortedPartners = dict(sorted(potentialPartners.items(), key=lambda item: item[1]))
+    output = ""
+    for (key, value) in sortedPartners.items():
+        output += key + " weighted percentage: " + str(value) + "\n"
+    print (output)
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -349,6 +365,9 @@ if __name__ == '__main__':
             nextName = input("Please input the next name:")
             teamNames.append(nextName)
         teamNames.append("End")
+        suggest = input("Do you want the suggestions for a last member rather than generation?")
+        if (suggest == "y"):
+            noGeneration = True
     generateTeam(name)
     rerun = input("Rerun creation with same names?")
     while (rerun == "y"):
