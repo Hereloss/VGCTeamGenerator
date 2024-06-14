@@ -10,10 +10,10 @@ listOfPokemonDetails = []
 restrictedAdded = False
 
 listOfRestricted = ["Calyrex-Shadow", "Calyrex-Ice", "Terapagos", "Miraidon", "Koraidon", "Groudon", "Zamazenta",
-                    "Zacian", "Lunala", "Kyruem-White", "Kyruem-Black", "Kyogre", "Eternatus", "Zamazenta-Crowned",
+                    "Zacian", "Lunala", "Kyurem-White", "Kyurem-Black", "Kyogre", "Eternatus", "Zamazenta-Crowned",
                     "Zacian-Crowned", "Mewtwo", "Dialga", "Palkia", "Lugia", "Ho-Oh", "Rayquaza", "Giratina", "Zekrom",
                     "Reshiram", "Solgaleo", "Necrozma-Dawn-Wings", "Necrozma-Dusk-Mane", "Necrozma", "Calyrex",
-                    "Dialga-Origin", "Palkia-Origin", "Giratina-Origin", ""]
+                    "Dialga-Origin", "Palkia-Origin", "Giratina-Origin", "Kyurem"]
 
 usedItems = []
 
@@ -223,7 +223,11 @@ def has_choice(inputString):
 
 
 def getTeamFromPercentage(data):
-    randomNum = random.random() * 600
+    total = 0
+    for (key, value) in data.items():
+        valueNum = float(value)
+        total += valueNum
+    randomNum = random.random() * total
     currentNum = 0
     while True:
         for (key, value) in data.items():
@@ -231,7 +235,7 @@ def getTeamFromPercentage(data):
             currentNum += valueNum
             if (randomNum < currentNum):
                 return key
-        randomNum = random.random() * 600
+        randomNum = random.random() * total
 
 
 def chooseStatDist(data, nature):
