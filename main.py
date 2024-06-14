@@ -147,6 +147,9 @@ def formatPokemon(name, moves, item, ability, stats, tera):
 def generateMovesFromPercentages(data):
     moves = []
     total = sumValues(data)
+    isDitto = False
+    if len(data) == 2:
+        isDitto = True
     while len(moves) < 4:
         randomNum = random.random() * (total / 4)
         currentNum = 0
@@ -156,6 +159,9 @@ def generateMovesFromPercentages(data):
             if (randomNum < currentNum):
                 moves.append(key)
                 break
+        if (isDitto):
+            moves = ["Transform","Nothing","Nothing","Nothing"]
+            return moves
         data.pop(key)
     return moves
 
@@ -344,3 +350,10 @@ if __name__ == '__main__':
             teamNames.append(nextName)
         teamNames.append("End")
     generateTeam(name)
+    rerun = input("Rerun creation with same names?")
+    while (rerun == "y"):
+        potentialPartners = {}
+        listOfPokemonDetails = []
+        usedItems = []
+        generateTeam(name)
+        rerun = input("Rerun creation with same names?")
